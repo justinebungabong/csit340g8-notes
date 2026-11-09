@@ -2,6 +2,10 @@ import NoteCard from "./NoteCard.jsx";
 import { useState } from "react";
 
 function Notes() {
+  const [form, setForm] = useState({
+    title: "",
+    body: ""
+  });
   const [notes] = useState([
     {
       id: 1,
@@ -14,6 +18,10 @@ function Notes() {
       body: "Practice writing one handler for many inputs.",
     },
   ]);
+
+  function handleChange(e) {
+    setForm({...form, [e.target.name]: e.target.value});
+  }
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
       <aside className="sticky top-0 flex h-screen flex-col gap-5 bg-white px-8 py-9 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]">
@@ -36,6 +44,8 @@ function Notes() {
             NEW NOTE
           </p>
           <input
+            value={form.title}
+            onChange={handleChange}
             name="title"
             placeholder="Title"
             className="h-[52px] w-full border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
@@ -43,6 +53,8 @@ function Notes() {
 
           <textarea
             name="body"
+            value={form.body}
+            onChange={handleChange}
             placeholder="Write your note"
             className="h-[120px] w-full resize-none py-3 border border-[#e6e6e6] px-4 text-lg outline-none placeholder:text-black/40 placeholder:italic focus:border-[#cf7d7d]"
           />
@@ -66,11 +78,11 @@ function Notes() {
             >
               <NoteCard title={note.title} body={note.body} />
               <button
-            type="button"
-            className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
-          >
-            ×
-          </button>
+                type="button"
+                className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
+              >
+                ×
+              </button>
             </li>
           ))}
         </ul>
