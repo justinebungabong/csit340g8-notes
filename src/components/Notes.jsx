@@ -4,9 +4,9 @@ import { useState } from "react";
 function Notes() {
   const [form, setForm] = useState({
     title: "",
-    body: ""
+    body: "",
   });
-  const [notes] = useState([
+  const [notes, setNotes] = useState([
     {
       id: 1,
       title: "Review map and filter",
@@ -20,7 +20,24 @@ function Notes() {
   ]);
 
   function handleChange(e) {
-    setForm({...form, [e.target.name]: e.target.value});
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const title = form.title.trim();
+    const body = form.body.trim();
+
+    if (title === "" || body === "") return;
+
+    const newNote = {
+      id: Date.now(),
+      title,
+      body,
+    };
+    setNotes([...notes, newNote]);
+    setForm({ title: "", body: "" });
   }
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
@@ -39,7 +56,7 @@ function Notes() {
           />
         </div>
 
-        <form className="grid gap-3">
+        <form className="grid gap-3" onSubmit={handleSubmit}>
           <p className="text-[13px] font-normal tracking-wide text-[#949494]">
             NEW NOTE
           </p>
