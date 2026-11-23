@@ -1,5 +1,5 @@
 import NoteCard from "./NoteCard.jsx";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 
 const startingNotes = [
   {
@@ -25,7 +25,7 @@ function Notes() {
   });
 
   const [search, setSearch] = useState("");
-  const titleRef = useRef(null)
+  const titleRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
@@ -34,9 +34,8 @@ function Notes() {
   useEffect(() => {
     const id = setTimeout(() => {
       localStorage.setItem("draft", JSON.stringify(form));
-      console.log("draft saved:", form.title);
     }, 1000);
-    return () => clearTimeout(id)
+    return () => clearTimeout(id);
   }, [form]);
 
   function handleChange(e) {
@@ -58,18 +57,18 @@ function Notes() {
     };
     setNotes([...notes, newNote]);
     setForm({ title: "", body: "" });
-    titleRef.current.focus()
+    titleRef.current.focus();
   }
 
-  function handleDelete(id) {
+  const handleDelete = useCallback((id) => {
     setNotes(notes.filter((note) => note.id !== id));
-  }
+  }, [notes]);
 
   const visibleNotes = useMemo(() => {
     return notes.filter((note) =>
-      note.title.toLowerCase().includes(search.toLowerCase())
-    )
-  }, [notes, search])
+      note.title.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [notes, search]);
 
   return (
     <div className="grid min-h-screen grid-cols-[420px_1fr]">
@@ -128,14 +127,12 @@ function Notes() {
               key={note.id}
               className="relative min-h-32 bg-white px-6 py-5 shadow-[0_2px_4px_0_rgba(0,0,0,0.2),0_25px_50px_0_rgba(0,0,0,0.1)]"
             >
-              <NoteCard title={note.title} body={note.body} />
-              <button
-                type="button"
-                onClick={() => handleDelete(note.id)}
-                className="absolute top-4 right-5 cursor-pointer text-[26px] leading-none text-[#949494] hover:text-[#c18585]"
-              >
-                ×
-              </button>
+              <NoteCard
+                id={note.id}
+                title={note.title}
+                body={note.body}
+                onDelete={handleDelete}
+              />
             </li>
           ))}
         </ul>
